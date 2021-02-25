@@ -63,6 +63,9 @@ Part 3 - Enhancing the 2-node TicToc
 
 https://docs.omnetpp.org/tutorials/tictoc/part3/
 
+Part 4 - Turning it Into a Real Network
+
+https://docs.omnetpp.org/tutorials/tictoc/part4/
 
 ##  Starter Code: <a name="code"></a>
 
