@@ -7,6 +7,10 @@
     1. [INET Wireless Tutorial](#wireless)
     2. [Tick-Tock Tutorial](#tick_tock)
 3. [Starter Code](#code)
+    1. [Code Part 1](#c1)
+    2. [Code Part 2](#c2)
+5. [Hackathon Part 1](#part1)
+6. [Hackathon Part 2](#part2)
 
 
 ##  Reference Material: <a name="background"></a>
@@ -60,5 +64,12 @@ Part 3 - Enhancing the 2-node TicToc
 https://docs.omnetpp.org/tutorials/tictoc/part3/
 
 
-
 ##  Starter Code: <a name="code"></a>
+
+### Part 1 Code <a name="c1"></a>
+
+### Part 2 Code <a name="c2"></a>
+
+##  Hackathon Part 1: <a name="part1"></a>
+
+##  Hackathon Part 2: <a name="part2"></a>
