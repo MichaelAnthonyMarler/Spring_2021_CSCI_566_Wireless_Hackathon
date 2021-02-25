@@ -47,7 +47,7 @@ https://inet.omnetpp.org/docs/tutorials/wireless/doc/step6.html
 
 ### Tick-Tock Tutorial <a name="tick_tock"></a>
 
-PART 1:Getting Started
+Part 1 - Getting Started
 
 https://docs.omnetpp.org/tutorials/tictoc/part1/
 
