@@ -68,6 +68,113 @@ https://docs.omnetpp.org/tutorials/tictoc/part3/
 
 ### Part 1 Code <a name="c1"></a>
 
+-------------
+#### txc1.cc
+
+````
+
+#include <string.h>
+#include <omnetpp.h>
+#include <stdio.h>
+
+    using namespace omnetpp;
+
+    class Txc1 : public cSimpleModule
+    {
+
+        private:
+            int counter;  // Note the counter here
+
+        protected:
+        // The following redefined virtual function holds the algorithm.
+            virtual void initialize() override;
+            virtual void handleMessage(cMessage *msg) override;
+    };
+
+    // The module class needs to be registered with OMNeT++
+    Define_Module(Txc1);
+
+    void Txc1::initialize() 
+    {
+        // Initialize is called at the beginning of the simulation.
+        // To bootstrap the tick-tock-tick-tock process, one of the modules needs
+        // to send the first message. Let this be `tock'.
+        // Initialize counter to ten. We'll decrement it every time and delete
+        // the message when it reaches zero.
+
+        counter = 10;
+
+        // The WATCH() statement below will let you examine the variable under
+        // Tkenv. 
+        WATCH(counter);
+
+
+
+        if (strcmp("green", getName()) == 0) {
+            // create and send first message on gate "out". "potatoMsg" is an
+            // arbitrary string which will be the name of the message object.
+
+            // The `ev' object works like `cout' in C++.
+
+            EV << "Sending initial message\n";
+            cMessage *msg = new cMessage("potatoMsg");
+
+            send(msg, "out");
+        }
+    }
+
+    void Txc1::handleMessage(cMessage *msg)
+    {
+        // The handleMessage() method is called whenever a message arrives
+        // at the module. Here, we just send it to the other module, through
+        // gate `out'. Because both `yellow' and `green' does the same, the message
+        // will bounce between the two.
+
+        // Increment counter and check value.
+        counter--;
+        if (counter == 0) {
+                    // If counter is zero, delete message. If you run the model, you'll
+                    // find that the simulation will stop at this point with the message
+                    // "no more events".
+            EV << getName() << "'s counter reached zero, deleting message\n";
+            delete msg;
+
+       } else {
+              EV << "Received message `" << msg->getName() << "', sending it out again\n";
+              send(msg, "out"); // send out the message
+
+           }
+      }
+`````
+-----------
+#### hp.ned
+-----------
+````
+simple Txc1
+{
+    parameters:
+        @display("i=block/routing"); // add a default icon
+    gates:
+        input in;
+        output out;
+}
+
+network Green_Yellow_Red1
+{
+    @display("bgb=370,322");
+    submodules:
+        green: Txc1 {
+            @display("i=,green;p=33,44"); // do not change the icon (first arg of i=) just colorize it
+        }
+        yellow: Txc1 {
+            @display("i=,yellow;p=300,262");
+        }
+    connections:
+        green.out --> {  delay = 100ms; } --> yellow.in;
+        green.in <-- {  delay = 100ms; } <-- yellow.out;
+}
+
+````
 ### Part 2 Code <a name="c2"></a>
 
 ##  Hackathon Part 1: <a name="part1"></a>
