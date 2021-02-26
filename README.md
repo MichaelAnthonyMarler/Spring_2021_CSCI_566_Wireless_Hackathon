@@ -168,6 +168,7 @@ network Green_Yellow_Red1
 ````
 package inet.tutorials.wifi;
 
+import inet.node.aodv.AodvRouter;
 import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;
 import inet.node.inet.INetworkNode;
 import inet.physicallayer.contract.packetlevel.IRadioMedium;
@@ -193,24 +194,97 @@ network WifiA
             @display("p=580,275");
         }
         hostA: <default("WirelessHost")> like INetworkNode {
-            @display("p=64.512,363.888");
+            @display("p=608.83203,35.280003");
         }
         hostB: <default("WirelessHost")> like INetworkNode {
-            @display("p=499.96802,100.8");
+            @display("p=34.272,444.528;i=abstract/accesspoint");
         }
 
         hostR1: <default("WirelessHost")> like INetworkNode {
-            @display("p=120.96001,278.208");
+            @display("p=569.52,444.528");
         }
         hostR2: <default("WirelessHost")> like INetworkNode {
-            @display("p=300.384,199.584");
+            @display("p=73.584,74.592");
         }
         hostR3: <default("WirelessHost")> like INetworkNode {
-            @display("p=300.384,403.2");
+            @display("p=301.392,292.32");
         }
 }
+````
+
+
+#### omnetpp.ini
+----------
+````
+#-----------------------------------------------------------------------------
+[Config Wireless01]
+description = Two hosts communicating wirelessly
+network = WifiA
+sim-time-limit = 20s
+
+*.host*.ipv4.arp.typename = "GlobalArp"
+
+*.hostA.numApps = 1
+*.hostA.app[0].typename = "UdpBasicApp"
+*.hostA.app[0].destAddresses = "hostB"
+*.hostA.app[0].destPort = 5000
+*.hostA.app[0].messageLength = 1000B
+*.hostA.app[0].sendInterval = exponential(20ms)#changed from 12ms
+*.hostA.app[0].packetName = "UDPData"
+
+*.hostB.numApps = 1
+*.hostB.app[0].typename = "UdpSink"
+*.hostB.app[0].localPort = 5000
+
+*.host*.wlan[0].typename = "AckingWirelessInterface"
+*.host*.wlan[0].mac.useAck = false
+*.host*.wlan[0].mac.fullDuplex = false
+
+*.host*.wlan[0].radio.receiver.ignoreInterference = true
+*.host*.wlan[0].mac.headerLength = 36B
+
+*.host*.wlan[0].radio.transmitter.communicationRange = 150m
+*.hostR1.wlan[0].radio.displayCommunicationRange = true
+*.host*.**.bitrate = 1Mbps
+
+*.hostA.wlan[0].radio.displayCommunicationRange = true
+
+*.visualizer.sceneVisualizer.descriptionFigure = "title"
+
+*.visualizer.mediumVisualizer.displaySignals = true
+
+*.visualizer.physicalLinkVisualizer.displayLinks = true
+*.visualizer.physicalLinkVisualizer.packetFilter = "UDPData*"
+
+*.host*.forwarding = true
+
+*.configurator.config = xml("<config><interface hosts='**' address='10.0.0.x' netmask='255.255.255.0'/><autoroute metric='errorRate'/></config>")
+*.configurator.optimizeRoutes = false
+*.host*.ipv4.routingTable.netmaskRoutes = ""
+
+*.visualizer.physicalLinkVisualizer.displayLinks = true
+*.visualizer.dataLinkVisualizer.displayLinks = true
+*.visualizer.networkRouteVisualizer.displayRoutes = true
+*.visualizer.*LinkVisualizer.lineShift = 0
+*.visualizer.networkRouteVisualizer.lineShift = 0
+*.visualizer.networkRouteVisualizer.packetFilter = "UDPData*"
+
+*.host*.wlan[0].radio.receiver.ignoreInterference = false
+*.host*.wlan[0].radio.transmitter.interferenceRange = 500m
+
+*.hostA.wlan[0].radio.displayInterferenceRange = true
+
+*.visualizer.dataLinkVisualizer.packetFilter = ""
+
+*.host*.wlan[0].typename = "WirelessInterface"
+*.host*.wlan[0].radio.typename = "UnitDiskRadio"
+*.host*.wlan[0].mac.typename = "CsmaCaMac"
+*.host*.wlan[0].mac.ackTimeout = 300us
+
+#-----------------------------------------------------------------------------
 
 ````
+----------
 ##  Hackathon Part 1: <a name="part1"></a>
 For Part One of this Hackathon we will be defining the behavior of this simulation utilizing C++ code. 
 
