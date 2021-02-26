@@ -181,5 +181,9 @@ network Green_Yellow_Red1
 ### Part 2 Code <a name="c2"></a>
 
 ##  Hackathon Part 1: <a name="part1"></a>
+For Part One of this Hackathon we will be defining the behavior of this simulation utilizing C++ code. 
 
+I would like you to build a network with an odd number of nodes based upon the sample code I have provided.
+
+In this network a message must start from the host I have named green pass through all the other nodes in the network and return to green
 ##  Hackathon Part 2: <a name="part2"></a>
