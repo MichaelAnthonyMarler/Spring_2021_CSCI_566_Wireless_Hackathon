@@ -85,11 +85,9 @@ https://docs.omnetpp.org/tutorials/tictoc/part4/
     class Txc1 : public cSimpleModule
     {
 
-        private:
-            int counter;  // Note the counter here
-
-        protected:
+       protected:
         // The following redefined virtual function holds the algorithm.
+            //virtual void forwardMessage(cMessage *msg);
             virtual void initialize() override;
             virtual void handleMessage(cMessage *msg) override;
     };
@@ -99,55 +97,32 @@ https://docs.omnetpp.org/tutorials/tictoc/part4/
 
     void Txc1::initialize() 
     {
-        // Initialize is called at the beginning of the simulation.
-        // To bootstrap the tick-tock-tick-tock process, one of the modules needs
-        // to send the first message. Let this be `tock'.
-        // Initialize counter to ten. We'll decrement it every time and delete
-        // the message when it reaches zero.
-
-        counter = 10;
-
-        // The WATCH() statement below will let you examine the variable under
-        // Tkenv. 
-        WATCH(counter);
-
-
 
         if (strcmp("green", getName()) == 0) {
-            // create and send first message on gate "out". "potatoMsg" is an
-            // arbitrary string which will be the name of the message object.
-
-            // The `ev' object works like `cout' in C++.
-
-            EV << "Sending initial message\n";
-            cMessage *msg = new cMessage("potatoMsg");
-
-            send(msg, "out");
+            // Boot the process scheduling the initial message as a self-message.
+            EV << "Sending Initial Message...\n";
+            cMessage *msg = new cMessage("GreenMsg");
+            send(msg, "g_out1");
         }
     }
 
-    void Txc1::handleMessage(cMessage *msg)
-    {
-        // The handleMessage() method is called whenever a message arrives
-        // at the module. Here, we just send it to the other module, through
-        // gate `out'. Because both `yellow' and `green' does the same, the message
-        // will bounce between the two.
+    void Txc1::handleMessage(cMessage *msg){
+        if(strcmp("yellow", getName()) == 0) {
+            if(msg->arrivedOn("y_in1")){
+                // Message arrived.
+                EV << "Message " << msg << " arrived.\n";
+                send(msg, "y_out1");
+            }
 
-        // Increment counter and check value.
-        counter--;
-        if (counter == 0) {
-                    // If counter is zero, delete message. If you run the model, you'll
-                    // find that the simulation will stop at this point with the message
-                    // "no more events".
-            EV << getName() << "'s counter reached zero, deleting message\n";
-            delete msg;
+     }else if (strcmp("green",getName())==0){
 
-       } else {
-              EV << "Received message `" << msg->getName() << "', sending it out again\n";
-              send(msg, "out"); // send out the message
+                  if(msg->arrivedOn("g_in1")){
+                      EV << "Message " << msg << " arrived.\n";
+                      send(msg, "g_out1");
+                  }
+             }
+     }
 
-           }
-      }
 `````
 -----------
 #### hp.ned
@@ -158,23 +133,31 @@ simple Txc1
     parameters:
         @display("i=block/routing"); // add a default icon
     gates:
-        input in;
-        output out;
+        input g_in1;
+        output g_out1;
+
+        input y_in1;
+        output y_out1;
+
 }
+
 
 network Green_Yellow_Red1
 {
-    @display("bgb=370,322");
+    @display("bgb=350,394");
     submodules:
         green: Txc1 {
-            @display("i=,green;p=33,44"); // do not change the icon (first arg of i=) just colorize it
+            @display("p=36,31");
         }
         yellow: Txc1 {
-            @display("i=,yellow;p=300,262");
+            @display("p=36,341");
         }
-    connections:
-        green.out --> {  delay = 100ms; } --> yellow.in;
-        green.in <-- {  delay = 100ms; } <-- yellow.out;
+    connections allowunconnected:
+        green.g_out1 --> {  delay = 100ms; } --> yellow.y_in1;
+        green.g_in1 <-- {  delay = 100ms; } <-- yellow.y_out1;
+
+
+
 }
 
 ````
