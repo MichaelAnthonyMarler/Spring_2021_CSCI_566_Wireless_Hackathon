@@ -269,18 +269,6 @@ sim-time-limit = 20s
 *.visualizer.networkRouteVisualizer.lineShift = 0
 *.visualizer.networkRouteVisualizer.packetFilter = "UDPData*"
 
-*.host*.wlan[0].radio.receiver.ignoreInterference = false
-*.host*.wlan[0].radio.transmitter.interferenceRange = 500m
-
-*.hostA.wlan[0].radio.displayInterferenceRange = true
-
-*.visualizer.dataLinkVisualizer.packetFilter = ""
-
-*.host*.wlan[0].typename = "WirelessInterface"
-*.host*.wlan[0].radio.typename = "UnitDiskRadio"
-*.host*.wlan[0].mac.typename = "CsmaCaMac"
-*.host*.wlan[0].mac.ackTimeout = 300us
-
 #-----------------------------------------------------------------------------
 
 ````
@@ -292,3 +280,5 @@ I would like you to build a network with an odd number of nodes based upon the s
 
 In this network a message must start from the host I have named green pass through all the other nodes in the network and return to green
 ##  Hackathon Part 2: <a name="part2"></a>
+
+Please update the initialization file for the network described in sample code part two to both take interference into account and to turn on CSMA with acknowledgments. Also the range of both host a and host R1 should not exceed 150m but every host in the network needs to be able to communicate with every other host. Please redesign the network to facilitate these requirements.
